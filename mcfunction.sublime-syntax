@@ -22,6 +22,7 @@ contexts:
         - match: (?=\n)
           pop: true
     - include: selector
+    - include: operators
     - include: data_tag
     - include: rel_number
     - include: namespace
@@ -51,6 +52,16 @@ contexts:
       scope: constant.language.boolean.true.mcfunction
     - match: \bfalse\b
       scope: constant.language.boolean.false.mcfunction
+  
+  operators:
+    - match: (?<=\s)=(?=\s)
+      scope: keyword.operator.assignment.mcfunction
+    - match: (?<=\s)[+\-*/%]=(?=\s)
+      scope: keyword.operator.arithmetic.mcfunction
+    - match: (?<=\s)[<>](?=\s)
+      scope: keyword.operator.comparison.mcfunction
+    - match: (?<=\s)><(?=\s)
+      scope: keyword.operator.swap.mcfunction
   
   dot_name_asterisk:
     - match: '\*'
