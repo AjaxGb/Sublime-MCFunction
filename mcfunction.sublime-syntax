@@ -9,7 +9,7 @@ variables:
 
 contexts:
   main:
-    - match: ^\s*(\/.*)$
+    - match: ^\s*(\/)
       captures:
         1: invalid.illegal.starting-forward-slash.mcfunction
     - match: ^\s*((#).*)$
