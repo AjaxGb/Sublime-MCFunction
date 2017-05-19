@@ -45,7 +45,7 @@ contexts:
       captures:
         1: punctuation.other.command-start.mcfunction
         2: variable.function.command.mcfunction
-      set: [Packages/JavaScript/JSON.sublime-syntax, player]
+      set: [JSON.sublime-syntax, player]
     - match: \b(\/)?(title)\b
       captures:
         1: punctuation.other.command-start.mcfunction
@@ -59,7 +59,7 @@ contexts:
   
   title_command_enum:
     - match: (?<=\s)(?:title|subtitle|actionbar)(?=\s)
-      set: Packages/JavaScript/JSON.sublime-syntax
+      set: JSON.sublime-syntax
     - match: (?=\S)
       pop: true
   
