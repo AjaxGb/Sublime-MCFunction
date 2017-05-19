@@ -94,6 +94,9 @@ contexts:
         - match: \]
           scope: punctuation.section.brackets.end.selector-args.mcfunction
           pop: true
+        - match: \s
+          scope: invalid.illegal.space-in-selector.mcfunction
+          pop: true
         - match: ','
           scope: punctuation.separator.selector.mcfunction
         - match: '(score_)({{selector_keyword}}?)(_min)?(=)'
