@@ -108,6 +108,8 @@ contexts:
             4: punctuation.separator.key-value.selector.mcfunction
         - match: '[+-]?\d+'
           scope: constant.numeric.integer.mcfunction
+        - match: '!'
+          scope: keyword.operator.logical.negative.selector.mcfunction
         - match: "{{selector_keyword}}"
           scope: string.unquoted.selector.mcfunction
     - match: '(@)[a-z]'
