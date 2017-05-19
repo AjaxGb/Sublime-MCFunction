@@ -41,10 +41,26 @@ contexts:
       captures:
         1: variable.function.command.mcfunction
       set: [command, blockstate_or_data, namespace_name, rel_number, rel_number, rel_number]
+    - match: \b(\/)?(tellraw)\b
+      captures:
+        1: punctuation.other.command-start.mcfunction
+        2: variable.function.command.mcfunction
+      set: [Packages/JavaScript/JSON.sublime-syntax, player]
+    - match: \b(\/)?(title)\b
+      captures:
+        1: punctuation.other.command-start.mcfunction
+        2: variable.function.command.mcfunction
+      set: [title_command_enum, player]
     - match: \b(\/)?(\S+)\b
       captures:
         1: punctuation.other.command-start.mcfunction
         2: variable.function.command.mcfunction
+      pop: true
+  
+  title_command_enum:
+    - match: (?<=\s)(?:title|subtitle|actionbar)(?=\s)
+      set: Packages/JavaScript/JSON.sublime-syntax
+    - match: (?=\S)
       pop: true
   
   boolean:
