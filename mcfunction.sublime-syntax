@@ -102,7 +102,7 @@ contexts:
         - match: '(score_)({{selector_keyword}}?)(_min)?(=)'
           captures:
             1: variable.language.selector.score-begin.mcfunction
-            2: storage.parameter.selector.objective.mcfunction
+            2: variable.other.member.selector.objective.mcfunction
             3: variable.language.selector.score-min.mcfunction
             4: punctuation.separator.key-value.selector.mcfunction
         - match: ({{selector_keyword}})(=)
