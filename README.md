@@ -11,3 +11,5 @@ A Sublime Text 3 plugin to add syntax highlighting for the function file format 
 1. Download [the `.sublime-syntax` file](https://raw.githubusercontent.com/AjaxGb/Sublime-MCFunction/master/mcfunction.sublime-syntax) (right click > "Save link as").
 2. Open the `Packages` folder by selecting "Preferences" > "Browse Packages..." in Sublime Text.
 3. Place the `.sublime-syntax` file in your `User` package folder, or in a new package folder such as `MCFunction`.
+
+When you're done, the file should be in `Packages/<some folder>/mcfunction.sublime-syntax`.
