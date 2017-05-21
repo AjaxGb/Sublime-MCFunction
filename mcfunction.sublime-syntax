@@ -26,7 +26,7 @@ contexts:
     - include: data_tag
     - include: rel_number
     - include: namespace
-    - include: dot_name_asterisk
+    - include: dot_name
     - include: blockstate
     - include: boolean
     - include: hidden_playername
@@ -79,11 +79,6 @@ contexts:
     - match: (?<=\s)><(?=\s)
       scope: keyword.operator.swap.mcfunction
   
-  dot_name_asterisk:
-    - match: '\*'
-      scope: constant.other.select-all.mcfunction
-      pop: true
-    - include: dot_name
   dot_name:
     - match: ([^\s\.]+)(\.)(?=\s)
       captures:
@@ -173,11 +168,17 @@ contexts:
       pop: true
     - include: number
   
+  asterisk:
+    - match: (?<=\s)\*(?=\s|$)
+      scope: constant.other.select-all.mcfunction
+      pop: true
+  
   blockstate_or_data:
     - include: number
     - include: blockstate
   
   blockstate:
+    - include: asterisk
     - match: \bdefault\b
       scope: variable.language.blockstate.default.mcfunction
       pop: true
