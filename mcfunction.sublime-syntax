@@ -12,6 +12,10 @@ contexts:
     - match: ^\s*(\/)
       captures:
         1: invalid.illegal.starting-forward-slash.mcfunction
+    - match: ^\s*((#~).*)$
+      captures:
+        1: comment.line.special.mcfunction keyword.other.special-comment.mcfunction
+        2: punctuation.definition.comment.special.mcfunction
     - match: ^\s*((#).*)$
       captures:
         1: comment.line.pound-sign.mcfunction
