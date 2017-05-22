@@ -234,18 +234,7 @@ contexts:
         - match: (?=\S)
           push: [_nbt_compound_comma, nbt, _nbt_compound_colon, _nbt_compound_key]
   _nbt_compound_key:
-    - match: '"'
-      scope: punctuation.definition.string.begin.nbt.mcfunction
-      set:
-        - meta_scope: variable.other.readwrite.nbt-key.mcfunction
-        - match: '"'
-          scope: punctuation.definition.string.end.nbt.mcfunction
-          pop: true
-        - match: \\.
-          scope: constant.character.escape.nbt.mcfunction
-    - match: '[a-zA-Z0-9._+\-]+'
-      scope: variable.other.readwrite.nbt-key.mcfunction
-      pop: true
+    - include: nbt_string
     - match: \S
       scope: invalid.illegal.invalid-key.nbt.mcfunction
   _nbt_compound_colon:
