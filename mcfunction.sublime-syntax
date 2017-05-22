@@ -101,7 +101,7 @@ contexts:
   selector:
     - match: '((@)[a-z])(\[)'
       captures:
-        1: entity.name.tag.selector.mcfunction
+        1: entity.name.selector.mcfunction
         2: punctuation.definition.selector.mcfunction
         3: punctuation.section.brackets.begin.selector-args.mcfunction
       set:
@@ -134,7 +134,6 @@ contexts:
       scope: entity.name.selector.mcfunction
       captures:
         1: punctuation.definition.selector.mcfunction
-        2: entity.name.selector.mcfunction
       pop: true
   
   player:
