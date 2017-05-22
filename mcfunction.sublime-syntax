@@ -97,7 +97,7 @@ contexts:
   selector:
     - match: '((@)[a-z])(\[)'
       captures:
-        1: entity.name.selector.mcfunction
+        1: entity.name.tag.selector.mcfunction
         2: punctuation.definition.selector.mcfunction
         3: punctuation.section.brackets.begin.selector-args.mcfunction
       set:
