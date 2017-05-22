@@ -4,6 +4,12 @@ A Sublime Text 3 plugin to add syntax highlighting and other functionality for t
 ![Demonstration of highlighting](pics/demo1.png)  
 *Shown using Monokai*
 
+Highlights comments, commands, entity selectors, numbers, namespaces, NBT, `this.sort.of.thing`, blockstates, and more (depending on color theme support).
+
+Points out errors in NBT syntax, as well as invalid forward slashes at the beginnings of lines.
+
+You can add special highlighting to comments by beginning them with `#~`.
+
 # Package Manager Installation
 *Coming Soon.* [[Pull Request]](https://github.com/wbond/package_control_channel/pull/6318)
 
