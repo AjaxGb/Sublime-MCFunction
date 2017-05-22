@@ -19,7 +19,7 @@ contexts:
     - match: ^\s*(?=\S)
       push: command
       with_prototype:
-        - match: (?=\n)
+        - match: (?<=\n)
           pop: true
     - include: selector
     - include: operators
@@ -217,50 +217,115 @@ contexts:
     - match: (?={)
       push: nbt_compound
       with_prototype:
-        - match: (?=\n)
+        - match: \n
+          scope: invalid.illegal.unfinished-nbt.mcfunction
+          pop: true
+        - match: (?<=\n)
           pop: true
   
   nbt_compound:
     - match: \{
       scope: punctuation.section.braces.begin.compound.nbt.mcfunction
-      push:
+      set:
         - meta_scope: meta.braces.compound.nbt.mcfunction
         - match: \}
           scope: punctuation.section.braces.end.compound.nbt.mcfunction
           pop: true
-        - match: ':'
-          scope: punctuation.separator.key-value.compound.mcfunction
-        - match: ','
-          scope: punctuation.separator.values.compound.mcfunction
-        - include: nbt
+        - match: (?=\S)
+          push: [_nbt_compound_comma, nbt, _nbt_compound_colon, _nbt_compound_key]
+  _nbt_compound_key:
+    - match: '"'
+      scope: punctuation.definition.string.begin.nbt.mcfunction
+      set:
+        - meta_scope: variable.other.readwrite.nbt-key.mcfunction
+        - match: '"'
+          scope: punctuation.definition.string.end.nbt.mcfunction
+          pop: true
+        - match: \\.
+          scope: constant.character.escape.nbt.mcfunction
+    - match: '[a-zA-Z0-9._+\-]+'
+      scope: variable.other.readwrite.nbt-key.mcfunction
+      pop: true
+    - match: \S
+      scope: invalid.illegal.invalid-key.nbt.mcfunction
+  _nbt_compound_colon:
+    - match: ':'
+      scope: punctuation.separator.key-value.compound.mcfunction
+      pop: true
+    - match: \S
+      scope: invalid.illegal.expected-colon.nbt.mcfunction
+  _nbt_compound_comma:
+    - match: ','
+      scope: punctuation.separator.values.compound.mcfunction
+      pop: true
+    - match: (?=})
+      pop: true
+    - match: \S
+      scope: invalid.illegal.expected-comma.nbt.mcfunction
   nbt_list:
     - match: (\[)(?:([IB])(;))?
       captures:
-        1: punctuation.section.brackets.begin.nbt.mcfunction
+        1: punctuation.section.brackets.begin.list.nbt.mcfunction
         2: storage.modifier.array-type.nbt.mcfunction
         3: punctuation.separator.array-type.nbt.mcfunction
-      push:
-        - meta_scope: meta.brackets.nbt.mcfunction
+      set:
+        - meta_scope: meta.brackets.list.nbt.mcfunction
         - match: \]
-          scope: punctuation.section.brackets.end.nbt.mcfunction
+          scope: punctuation.section.brackets.end.list.nbt.mcfunction
           pop: true
-        - match: ','
-          scope: punctuation.separator.values.list.mcfunction
-        - include: nbt
+        - match: (?=\S)
+          push: [_nbt_list_comma, nbt]
+  _nbt_list_comma:
+    - match: ','
+      scope: punctuation.separator.values.list.mcfunction
+      pop: true
+    - match: (?=])
+      pop: true
+    - match: \S
+      scope: invalid.illegal.expected-comma.nbt.mcfunction
   nbt_boolean: # Technically a byte, but they look different
     - match: \btrue\b
-      scope: constant.language.boolean.true.nbt.mcfunction
+      scope: constant.numeric.byte.boolean.true.nbt.mcfunction
+      pop: true
     - match: \bfalse\b
-      scope: constant.language.boolean.false.nbt.mcfunction
-  nbt_numbers:
-    - match: '[+-]?(?:0|[1-9]\d*)[bBsSlL]?\b(?=[^\.eE])'
+      scope: constant.numeric.byte.boolean.false.nbt.mcfunction
+      pop: true
+  nbt_byte:
+    - match: '[+-]?(?:0|[1-9]\d*)[bB]\b(?=[^\.eE])'
+      scope: constant.numeric.byte.nbt.mcfunction
+      pop: true
+    - include: nbt_boolean
+  nbt_short:
+    - match: '[+-]?(?:0|[1-9]\d*)[sS]\b(?=[^\.eE])'
+      scope: constant.numeric.short.nbt.mcfunction
+      pop: true
+  nbt_long:
+    - match: '[+-]?(?:0|[1-9]\d*)[lL]\b(?=[^\.eE])'
+      scope: constant.numeric.long.nbt.mcfunction
+      pop: true
+  nbt_int:
+    - match: '[+-]?(?:0|[1-9]\d*)\b(?=[^\.eE])'
       scope: constant.numeric.integer.nbt.mcfunction
-    - match: '[+-]?(?:\d+\.\d+|\.\d+|\d+\.|\d+)(?:[eE][+-]?\d+)?[fFdD]?\b'
+      pop: true
+  nbt_float:
+    - match: '[+-]?(?:\d+\.\d+|\.\d+|\d+\.|\d+)(?:[eE][+-]?\d+)?[fF]\b'
       scope: constant.numeric.float.nbt.mcfunction
+      pop: true
+  nbt_double:
+    - match: '[+-]?(?:\d+\.\d+|\.\d+|\d+\.|\d+)(?:[eE][+-]?\d+)?[dD]?\b'
+      scope: constant.numeric.double.nbt.mcfunction
+      pop: true
+  nbt_number:
+    - include: nbt_byte
+    - include: nbt_short
+    - include: nbt_long
+    - include: nbt_int
+    - include: nbt_float
+    - include: nbt_double
   nbt_string:
     - match: '"'
       scope: punctuation.definition.string.begin.nbt.mcfunction
-      push:
+      set:
         - meta_scope: string.quoted.double.nbt.mcfunction
         - match: '"'
           scope: punctuation.definition.string.end.nbt.mcfunction
@@ -269,11 +334,12 @@ contexts:
           scope: constant.character.escape.nbt.mcfunction
     - match: '[a-zA-Z0-9._+\-]+'
       scope: string.unquoted.nbt.mcfunction
+      pop: true
   nbt:
     - include: nbt_compound
+    - include: nbt_int_array
     - include: nbt_list
-    - include: nbt_numbers
-    - include: nbt_boolean
+    - include: nbt_number
     - include: nbt_string
     - match: \S
       scope: invalid.illegal.illegal-character.mcfunction
