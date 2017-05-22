@@ -326,7 +326,6 @@ contexts:
       pop: true
   nbt:
     - include: nbt_compound
-    - include: nbt_int_array
     - include: nbt_list
     - include: nbt_number
     - include: nbt_string
