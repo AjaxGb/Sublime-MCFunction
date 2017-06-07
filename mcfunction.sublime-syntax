@@ -68,23 +68,23 @@ contexts:
       pop: true
   
   boolean:
-    - match: \btrue\b
+    - match: (?<=\s)true(?=\s|$)
       scope: constant.language.boolean.true.mcfunction
-    - match: \bfalse\b
+    - match: (?<=\s)false(?=\s|$)
       scope: constant.language.boolean.false.mcfunction
   
   operators:
-    - match: (?<=\s)=(?=\s)
+    - match: (?<=\s)=(?=\s|$)
       scope: keyword.operator.assignment.mcfunction
-    - match: (?<=\s)[+\-*/%]=(?=\s)
+    - match: (?<=\s)[+\-*/%]=(?=\s|$)
       scope: keyword.operator.arithmetic.mcfunction
-    - match: (?<=\s)[<>](?=\s)
+    - match: (?<=\s)[<>](?=\s|$)
       scope: keyword.operator.comparison.mcfunction
-    - match: (?<=\s)><(?=\s)
+    - match: (?<=\s)><(?=\s|$)
       scope: keyword.operator.swap.mcfunction
   
   dot_name:
-    - match: ([^\s\.]+)(\.)(?=\s)
+    - match: ([^\s\.]+)(\.)(?=\s|$)
       captures:
         1: entity.name.enum.mcfunction
         2: punctuation.accessor.dot-name.mcfunction
@@ -93,13 +93,13 @@ contexts:
       captures:
         1: entity.name.enum.mcfunction
         2: punctuation.accessor.dot-name.mcfunction
-    - match: (?<=\.)([^\s\.]+)(?=\s)
+    - match: (?<=\.)([^\s\.]+)(?=\s|$)
       captures:
         1: entity.name.enum.mcfunction
       pop: true
   
   selector:
-    - match: '((@)[a-z])(\[)'
+    - match: '(?<=\s)((@)[a-z])(\[)'
       captures:
         1: entity.name.selector.mcfunction
         2: punctuation.definition.selector.mcfunction
@@ -130,7 +130,7 @@ contexts:
           scope: keyword.operator.logical.negative.selector.mcfunction
         - match: "{{selector_keyword}}"
           scope: string.unquoted.selector.mcfunction
-    - match: '(@)[a-z]'
+    - match: '(?<=\s)(@)[a-z]'
       scope: entity.name.selector.mcfunction
       captures:
         1: punctuation.definition.selector.mcfunction
@@ -149,24 +149,24 @@ contexts:
       pop: true
   
   number:
-    - match: '[+-]?(?:\d+)?\.\d+'
+    - match: (?<=\s)[+-]?(?:\d+)?\.\d+(?=\s|$)
       scope: constant.numeric.float.mcfunction
-    - match: '[+-]?\d+'
+    - match: (?<=\s)[+-]?\d+(?=\s|$)
       scope: constant.numeric.integer.mcfunction
       pop: true
   
   rel_number:
-    - match: (~)([+-]?(?:\d+)?\.\d+)
+    - match: (?<=\s)(~)([+-]?(?:\d+)?\.\d+)(?=\s|$)
       captures:
         1: keyword.operator.relative.mcfunction
         2: constant.numeric.float.mcfunction
       pop: true
-    - match: (~)([+-]?\d+)
+    - match: (?<=\s)(~)([+-]?\d+)(?=\s|$)
       captures:
         1: keyword.operator.relative.mcfunction
         2: constant.numeric.integer.mcfunction
       pop: true
-    - match: '~'
+    - match: (?<=\s)~(?=\s|$)
       scope: keyword.operator.relative.mcfunction
       pop: true
     - include: number
@@ -182,7 +182,7 @@ contexts:
   
   blockstate:
     - include: asterisk
-    - match: \bdefault\b
+    - match: (?<=\s)default(?=\s|$)
       scope: variable.language.blockstate.default.mcfunction
       pop: true
     - match: (?=[^\s=,]+=)
