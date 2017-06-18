@@ -11,7 +11,7 @@ Points out errors in NBT syntax, as well as invalid forward slashes at the begin
 You can add special highlighting to comments by beginning them with `#~`.
 
 # Package Control Installation
-***Recommended!** Among other things, Package Control will automatically keep this package up-to-date.*
+***Recommended!*** *Among other things, Package Control will automatically keep this package up-to-date.*
 
 0. If you have already installed MCFunction manually, delete the manual installation. Sublime may warn you that it is unable to find the package; this is fine. You'll be adding it back in a moment.
 1. If you haven't already, install Package Control. https://packagecontrol.io/installation
