@@ -68,9 +68,9 @@ contexts:
       pop: true
   
   boolean:
-    - match: (?<=\s)true(?=\s|$)
+    - match: (?i)(?<=\s)true(?=\s|$)
       scope: constant.language.boolean.true.mcfunction
-    - match: (?<=\s)false(?=\s|$)
+    - match: (?i)(?<=\s)false(?=\s|$)
       scope: constant.language.boolean.false.mcfunction
   
   operators:
@@ -287,10 +287,10 @@ contexts:
     - match: \S
       scope: invalid.illegal.expected-comma.nbt.mcfunction
   nbt_boolean: # Technically a byte, but they look different
-    - match: \btrue\b
+    - match: (?i)\btrue\b
       scope: constant.numeric.byte.boolean.true.nbt.mcfunction
       pop: true
-    - match: \bfalse\b
+    - match: (?i)\bfalse\b
       scope: constant.numeric.byte.boolean.false.nbt.mcfunction
       pop: true
   nbt_byte:
