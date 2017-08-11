@@ -315,7 +315,10 @@ contexts:
       scope: constant.numeric.float.nbt.mcfunction
       pop: true
   nbt_double:
-    - match: '[+-]?(?:\d+\.\d+|\.\d+|\d+\.|\d+)(?:[eE][+-]?\d+[dD]|[dD])?\b'
+    - match: '[+-]?(?:\d+\.\d+|\.\d+|\d+\.)(?:[eE][+-]?\d+)?[dD]?\b'
+      scope: constant.numeric.double.nbt.mcfunction
+      pop: true
+    - match: '[+-]?\d+(?:[eE][+-]?\d+[dD]|[dD])?\b'
       scope: constant.numeric.double.nbt.mcfunction
       pop: true
   nbt_number:
