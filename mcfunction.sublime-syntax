@@ -266,7 +266,7 @@ contexts:
     - match: \S
       scope: invalid.illegal.expected-comma.nbt.mcfunction
   nbt_list:
-    - match: (\[)(?:([IB])(;))?
+    - match: (\[)(?:([IBL])(;))?
       captures:
         1: punctuation.section.brackets.begin.list.nbt.mcfunction
         2: storage.modifier.array-type.nbt.mcfunction
