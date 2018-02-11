@@ -6,6 +6,7 @@ scope: source.mcfunction
 
 variables:
   selector_keyword: '[^\s,=\]]+'
+  unquoted_char: '[a-zA-Z0-9._+\-]'
 
 contexts:
   main:
@@ -36,16 +37,92 @@ contexts:
     - include: hidden_playername
   
   command:
-    - match: \b(\/)?(execute)\b
+    - match: (?<!\S)(\/)?(execute)(?!\S)
       captures:
         1: punctuation.other.command-start.mcfunction
         2: variable.function.command.mcfunction
-      set: [command, rel_number, rel_number, rel_number, player]
-    - match: (?<!^)\s*(detect)\b
+      push:
+        - match: (?<!\S)run(?!\S)
+          scope: keyword.other.execute-run.mcfunction
+          pop: true
+        - match: (?<!\S)as(?!\S)
+          scope: variable.function.subcommand.mcfunction
+          push: player
+        - match: (?<!\S)at(?!\S)
+          scope: variable.function.subcommand.mcfunction
+          push: player
+        - match: (?<!\S)positioned as(?!\S)
+          scope: variable.function.subcommand.mcfunction
+          push: player
+        - match: (?<!\S)positioned(?!\S)
+          scope: variable.function.subcommand.mcfunction
+          push: blockpos
+        - match: (?<!\S)align(?!\S)
+          scope: variable.function.subcommand.mcfunction
+          push:
+            - match: (?<!\S)(?:x(?:yz?|zy?)?|y(?:xz?|zx?)?|z(?:xy?|yx?)?)(?!\S)
+              scope: entity.name.swizzle.mcfunction
+              pop: true
+        - match: (?<!\S)facing entity(?!\S)
+          scope: variable.function.subcommand.mcfunction
+          push: [anchor, player]
+        - match: (?<!\S)facing(?!\S)
+          scope: variable.function.subcommand.mcfunction
+          push: blockpos
+        - match: (?<!\S)rotated as(?!\S)
+          scope: variable.function.subcommand.mcfunction
+          push: player
+        - match: (?<!\S)rotated(?!\S)
+          scope: variable.function.subcommand.mcfunction
+          push: rotation
+        - match: (?<!\S)in(?!\S)
+          scope: variable.function.subcommand.mcfunction
+          push: 
+            - match: (?<!\S)(?:overworld|the_end|the_nether)(?!\S)
+              scope: entity.name.dimension.mcfunction
+              pop: true
+        - match: (?<!\S)anchored(?!\S)
+          scope: variable.function.subcommand.mcfunction
+          push: anchor
+        - match: (?<!\S)(?:if|unless)(?!\S)
+          scope: variable.function.subcommand.mcfunction
+          push:
+            - match: (?<!\S)block(?!\S)
+              scope: variable.function.subcommand.mcfunction
+              set: [namespace_name, blockpos]
+            - match: (?<!\S)blocks(?!\S)
+              scope: variable.function.subcommand.mcfunction
+              set: [masked, blockpos, blockpos, blockpos]
+            - match: (?<!\S)entity(?!\S)
+              scope: variable.function.subcommand.mcfunction
+              set: player
+            - match: (?<!\S)score(?!\S)
+              scope: variable.function.subcommand.mcfunction
+              set: [_if_score_cont, objective, player]
+        - match: (?<!\S)store(?!\S)
+          scope: variable.function.subcommand.mcfunction
+          push:
+            - match: (?<!\S)(?:result|success)(?!\S)
+              scope: entity.name.stat-type.mcfunction
+              set:
+                - match: (?<!\S)score(?!\S)
+                  scope: entity.name.store-type.score.mcfunction
+                  set: [objective, player]
+                - match: (?<!\S)block(?!\S)
+                  scope: entity.name.store-type.block.mcfunction
+                  set: [number, nbt_number_type, nbt_path, blockpos]
+                - match: (?<!\S)entity(?!\S)
+                  scope: entity.name.store-type.entity.mcfunction
+                  set: [number, nbt_number_type, nbt_path, selector]
+                - match: (?<!\S)bossbar(?!\S)
+                  scope: entity.name.store-type.entity.mcfunction
+                  set: [bossbar_value, namespace_name]
+            
+    - match: (?<=\S)\s*(detect)(?!\S)
       captures:
         1: variable.function.command.mcfunction
       set: [command, blockstate_or_data, namespace_name, rel_number, rel_number, rel_number]
-    - match: \b(\/)?(tellraw)\b
+    - match: (?<!\S)(\/)?(tellraw)(?!\S)
       captures:
         1: punctuation.other.command-start.mcfunction
         2: variable.function.command.mcfunction
@@ -61,6 +138,14 @@ contexts:
         2: variable.function.command.mcfunction
       pop: true
   
+  _if_score_cont:
+    - match: (?<!\S)(?:<|<=|=|>=|>)(?!\S)
+      scope: keyword.operator.comparison.mcfunction
+      set: [objective, player]
+    - match: (?<!\S)matches(?!\S)
+      scope: entity.name.matches.mcfunction
+      set: int_range
+  
   _title_command_enum:
     - match: (?<=\s)(?:title|subtitle|actionbar)(?=\s)
       set: JSON.sublime-syntax
@@ -68,23 +153,23 @@ contexts:
       pop: true
   
   boolean:
-    - match: (?i)(?<=\s)true(?=\s|$)
+    - match: (?<!\S)true(?!\S)
       scope: constant.language.boolean.true.mcfunction
-    - match: (?i)(?<=\s)false(?=\s|$)
+    - match: (?<!\S)false(?!\S)
       scope: constant.language.boolean.false.mcfunction
   
   operators:
-    - match: (?<=\s)=(?=\s|$)
+    - match: (?<!\S)=(?!\S)
       scope: keyword.operator.assignment.mcfunction
-    - match: (?<=\s)[+\-*/%]=(?=\s|$)
+    - match: (?<!\S)[+\-*/%]=(?!\S)
       scope: keyword.operator.arithmetic.mcfunction
-    - match: (?<=\s)[<>](?=\s|$)
+    - match: (?<!\S)[<>](?!\S)
       scope: keyword.operator.comparison.mcfunction
-    - match: (?<=\s)><(?=\s|$)
+    - match: (?<!\S)><(?!\S)
       scope: keyword.operator.swap.mcfunction
   
   dot_name:
-    - match: ([^\s\.]+)(\.)(?=\s|$)
+    - match: ([^\s\.]+)(\.)(?!\S)
       captures:
         1: entity.name.enum.mcfunction
         2: punctuation.accessor.dot-name.mcfunction
@@ -98,15 +183,15 @@ contexts:
         1: entity.name.enum.mcfunction
       pop: true
   
-  selector:
-    - match: '(?<=\s)((@)[a-z])(\[)'
+  selector: # TODO 1.13
+    - match: '(?<!\S)((@)[a-z])(\[)'
       captures:
         1: entity.name.selector.mcfunction
         2: punctuation.definition.selector.mcfunction
         3: punctuation.section.brackets.begin.selector-args.mcfunction
       set:
         - meta_scope: meta.selector.mcfunction
-        - match: \]
+        - match: \](?!\S)
           scope: punctuation.section.brackets.end.selector-args.mcfunction
           pop: true
         - match: \s
@@ -130,7 +215,7 @@ contexts:
           scope: keyword.operator.logical.negative.selector.mcfunction
         - match: "{{selector_keyword}}"
           scope: string.unquoted.selector.mcfunction
-    - match: '(?<=\s)(@)[a-z]'
+    - match: '(?<!\S)(@)[a-z]'
       scope: entity.name.selector.mcfunction
       captures:
         1: punctuation.definition.selector.mcfunction
@@ -148,28 +233,73 @@ contexts:
         1: keyword.other.hidden-playername.mcfunction
       pop: true
   
+  objective:
+    - match: '(?<!\S){{unquoted_char}}+(?!\S)'
+      scope: variable.other.objective.mcfunction
+      pop: true
+    - match: '(?<!\S){{unquoted_char}}*(\S)'
+      captures:
+        1: invalid.illegal.invalid-character.mcfunction
+  
+  anchor:
+    - match: (?<!\S)(?:eyes|feet)(?!\S)
+      scope: entity.name.anchor.mcfunction
+      pop: true
+  
+  masked:
+    - match: (?<!\S)(?:all|masked)(?!\S)
+      scope: entity.name.masked.mcfunction
+      pop: true
+  
+  bossbar_value:
+    - match: (?<!\S)(?:value|max)(?!\S)
+      scope: entity.name.bossbar-value.mcfunction
+      pop: true
+  
   number:
-    - match: (?<=\s)[+-]?(?:\d+)?\.\d+(?=\s|$)
+    - match: (?<!\S)-?(?:\d+)?\.\d+(?!\S)
       scope: constant.numeric.float.mcfunction
-    - match: (?<=\s)[+-]?\d+(?=\s|$)
+      pop: true
+    - match: (?<!\S)-?\d+(?!\S)
       scope: constant.numeric.integer.mcfunction
       pop: true
   
+  int_range:
+    - match: (?<!\w)(-?\d+)(?:(\.\.)(-?\d+\b)?)?(?!\w)
+      captures:
+        1: constant.numeric.integer.mcfunction
+        2: keyword.other.range.mcfunction
+        3: constant.numeric.integer.mcfunction
+      pop: true
+    - match: (?<!\w)(\.\.)(-?\d+\b)(?!\w)
+      captures:
+        1: keyword.other.range.mcfunction
+        2: constant.numeric.integer.mcfunction
+      pop: true
+  
   rel_number:
-    - match: (?<=\s)(~)([+-]?(?:\d+)?\.\d+)(?=\s|$)
+    - match: (?<!\S)(~)([+-]?(?:\d+)?\.\d+)(?!\S)
       captures:
         1: keyword.operator.relative.mcfunction
         2: constant.numeric.float.mcfunction
       pop: true
-    - match: (?<=\s)(~)([+-]?\d+)(?=\s|$)
+    - match: (?<!\S)(~)([+-]?\d+)(?!\S)
       captures:
         1: keyword.operator.relative.mcfunction
         2: constant.numeric.integer.mcfunction
       pop: true
-    - match: (?<=\s)~(?=\s|$)
+    - match: (?<!\S)~(?!\S)
       scope: keyword.operator.relative.mcfunction
       pop: true
     - include: number
+  
+  blockpos:
+    - match: (?=\S)
+      set: [rel_number, rel_number, rel_number]
+  
+  rotation:
+    - match: (?=\S)
+      set: [rel_number, rel_number]
   
   asterisk:
     - match: (?<=\s)\*(?=\s|$)
@@ -182,7 +312,7 @@ contexts:
   
   blockstate:
     - include: asterisk
-    - match: (?<=\s)default(?=\s|$)
+    - match: \bdefault\b
       scope: variable.language.blockstate.default.mcfunction
       pop: true
     - match: (?=[^\s=,]+=)
@@ -204,18 +334,68 @@ contexts:
           pop: true
   
   namespace:
-    - match: ([^\s:]+)(:)
+    - match: (\w+)(:)
       captures:
         1: entity.name.namespace.mcfunction
         2: punctuation.accessor.namespace.mcfunction
   
   namespace_name:
-    - match: (?:([^\s:]+)(:))?(\S+)
+    - match: (?<!\S)(?:(\w+)(:))?(\S+)
       captures:
         1: entity.name.namespace.mcfunction
         2: punctuation.accessor.namespace.mcfunction
       pop: true
-    
+  
+  nbt_number_type:
+    - match: (?<!\S)(?:byte|double|float|int|long|short)(?!\S)
+      scope: entity.name.type.nbt-number.mcfunction
+      pop: true
+  
+  nbt_path:
+    - match: (?=[^.\s])
+      set:
+        - meta_scope: meta.path.nbt-path.mcfunction
+        - match: (?=\s)
+          pop: true
+        - match: (?="|{{unquoted_char}})
+          push: [_nbt_path_connector, _nbt_path_string]
+        - match: (?=\[)
+          push: [_nbt_path_connector, _nbt_path_array]
+  _nbt_path_connector:
+    - match: (?=\s)
+      pop: true
+    - match: \.(?!\s)
+      scope: punctuation.accessor.dot.nbt-path.mcfunction
+      set: [_nbt_path_connector, _nbt_path_string]
+    - match: (?=\[)
+      set: [_nbt_path_connector, _nbt_path_array]
+  _nbt_path_string:
+    - match: '"'
+      scope: punctuation.definition.string.begin.nbt-path.mcfunction
+      set:
+        - meta_scope: string.quoted.double.nbt-path.mcfunction
+        - match: '"'
+          captures:
+            1: punctuation.definition.string.end.nbt-path.mcfunction
+            2: punctuation.accessor.dot.nbt-path.mcfunction
+          pop: true
+        - match: '"'
+          scope: punctuation.definition.string.end.nbt-path.mcfunction
+          pop: true
+        - match: \\.
+          scope: constant.character.escape.nbt-path.mcfunction
+    - match: '[a-zA-Z0-9_+\-]+'
+      scope: string.unquoted.nbt-path.mcfunction
+      pop: true
+  _nbt_path_array:
+    - match: (\[)(\d+)(\])
+      scope: meta.brackets.nbt-path.mcfunction
+      captures:
+        1: punctuation.section.brackets.begin.nbt-path.mcfunction
+        2: constant.numeric.integer.nbt-path.mcfunction
+        3: punctuation.section.brackets.end.nbt-path.mcfunction
+      pop: true
+  
   data_tag:
     - match: (?={)
       push: nbt_compound
@@ -338,7 +518,7 @@ contexts:
           pop: true
         - match: \\.
           scope: constant.character.escape.nbt.mcfunction
-    - match: '[a-zA-Z0-9._+\-]+'
+    - match: '{{unquoted_char}}+'
       scope: string.unquoted.nbt.mcfunction
       pop: true
   nbt:
