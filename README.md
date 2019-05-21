@@ -1,6 +1,12 @@
 # Sublime-MCFunction
 A Sublime Text 3 package that adds syntax highlighting and other functionality for Minecraft's function file format (`.mcfunction`) added in the 1.12 prereleases.
 
+---
+
+***WARNING: This package is no longer being maintained!*** It does not support Minecraft 1.13, or any version afterwards. I recommend moving to Arcensoth's [language-mcfunction](https://github.com/Arcensoth/language-mcfunction#installing-the-sublimetext-package) package, which supports both VS Code and Sublime Text, and is being actively updated.
+
+---
+
 ![Demonstration of highlighting](pics/demo1.png)  
 *Shown using Monokai*
 
